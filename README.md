@@ -1,9 +1,6 @@
 Raspberry Pi setup routine
 ==========================
 
-**Note** I've started to transform my setup guide to [Ansible
-playbooks](http://www.ansible.com/) at [thpani/pi](https://github.com/thpani/pi).
-
 ## Headless boot to SSH over WiFi
 
 `/etc/network/interfaces`
@@ -25,6 +22,10 @@ playbooks](http://www.ansible.com/) at [thpani/pi](https://github.com/thpani/pi)
 ## Install python packages for ansible
 
     sudo apt-get install python-apt
+
+## Run ansible play
+
+    ansible-playbook playbook.yml
 
 ## Disable power saving on the 8192CU (Edimax WiFi dongle)
 
