@@ -19,6 +19,11 @@ Raspberry Pi setup routine
     
     iface default inet dhcp
 
+## Configure and reboot (!!!)
+
+    sudo raspi-config
+    sudo reboot
+
 ## Install python packages for ansible
 
     sudo apt-get install python-apt
