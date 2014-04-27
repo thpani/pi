@@ -1,0 +1,11 @@
+---
+- hosts: raspberries
+  remote_user: pi
+  sudo: yes
+  tasks:
+  - apt: update_cache=yes
+  - apt: pkg={{ item }}
+    with_items:
+      - tmux
+      - vim
+      - zsh
