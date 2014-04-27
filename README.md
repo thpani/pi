@@ -3,7 +3,7 @@ Raspberry Pi setup routine
 
 ## Headless boot to SSH over WiFi
 
-`/etc/network/interfaces`
+Prepare `/etc/network/interfaces` on the SD card:
 
     auto lo
     auto eth0
@@ -19,35 +19,31 @@ Raspberry Pi setup routine
     
     iface default inet dhcp
 
-## Configure and reboot (!!!)
+## Basic Setup
 
-    sudo raspi-config
-    sudo reboot
+### Change the pi user password
 
-## Install python packages for ansible
+    (local) $ ssh-copy-id pi@<raspberry-ip>
+    (local) $ ssh pi@<raspberry-ip>
+    (pi)    $ passwd
 
-    sudo apt-get install python-apt
+### Configure and reboot (!!!)
 
-## Run ansible play
+    (pi)    $ sudo raspi-config
+    (pi)    $ sudo reboot       # filesystem enlargement
+    (pi)    $ sudo apt-get install python-apt
 
-    ansible-playbook playbook.yml
+### Run ansible play
+
+    (local) $ cp secret.yml.example secret.yml
+    (local) $ $EDITOR secret.yml
+    (local) $ ansible-playbook playbook.yml
 
 ## Disable power saving on the 8192CU (Edimax WiFi dongle)
 
 `/etc/modprobe.d/8192cu.conf`
 
     options 8192cu rtw_power_mgnt=0 rtw_enusbss=0
-    
-## User setup
-
-    $ passwd
-    $ sudo useradd -m -G sudo,audio,video,users thomas
-    $ sudo passwd thomas
-
-## Software
-
-    $ sudo aptitude install vim tmux zsh
-    $ chsh -s /bin/zsh
 
 ## Time Machine
 
