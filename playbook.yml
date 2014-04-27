@@ -2,10 +2,50 @@
 - hosts: raspberries
   remote_user: pi
   sudo: yes
+  vars:
+    username: thomas
+  vars_files:
+    - secret.yml
   tasks:
-  - apt: update_cache=yes
-  - apt: pkg={{ item }}
+
+  # Update repositories cache
+  - apt: update_cache=yes cache_valid_time=3600
+
+  # Upgrade all packages to the latest version
+  - apt: upgrade=dist
+
+  # Install essential packages
+  - name: Install essential packages
+    apt: pkg={{ item }}
     with_items:
       - tmux
       - vim
       - zsh
+
+  # Add a user
+  - name: user setup
+    user: name={{ username }}
+          groups=sudo
+          password={{password}}
+          shell=/bin/zsh
+          generate_ssh_key=yes
+    register: useradd
+
+  # print instructions
+  - pause: prompt="ssh-copy-id {{ username }}@{{ ansible_default_ipv4.address }}"
+    when: useradd|changed
+
+  - command: cat /home/{{ username }}/.ssh/id_rsa.pub
+    register: public_key
+    changed_when: False
+    when: useradd|changed
+
+  - pause: prompt="Copy to github etc: {{ public_key.stdout }}"
+    when: useradd|changed
+
+  # setup dotfiles
+  - git: repo=ssh://git@bitbucket.org:thpani/dotfiles.git dest=/home/{{ username }}/src/dotfiles accept_hostkey=True
+    register: git_dotfiles
+
+  - command: chdir=/home/{{ username }}/src/dotfiles make
+    when: git_dotfiles|changed
